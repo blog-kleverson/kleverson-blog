@@ -44,7 +44,8 @@ import {
   Loader2,
   Users,
   Search,
-  X
+  X,
+  Eye
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -348,6 +349,16 @@ export default function Admin() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          {post.status === 'draft' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => window.open(`/artigo/${post.slug}?preview=true`, '_blank')}
+                              title="Pré-visualizar"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"

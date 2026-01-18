@@ -392,6 +392,20 @@ export default function AdminPostEditor() {
                     }
                   />
                 </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="show_updated_at">Mostrar data de atualização</Label>
+                    <p className="text-xs text-muted-foreground">Exibe "Atualizado em" no artigo</p>
+                  </div>
+                  <Switch
+                    id="show_updated_at"
+                    checked={(formData as any).show_updated_at || false}
+                    onCheckedChange={(checked) =>
+                      setFormData(prev => ({ ...prev, popular: checked }))
+                    }
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, MessageCircle, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
 import PostCardLarge from "@/components/PostCardLarge";
@@ -7,8 +7,12 @@ import WhatsAppLeadModal from "@/components/WhatsAppLeadModal";
 import ArticleTableOfContents from "@/components/ArticleTableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import SocialShareButtons from "@/components/SocialShareButtons";
-import { usePostBySlug, useRelatedPosts } from "@/hooks/usePosts";
+import ArticleContent from "@/components/ArticleContent";
+import { usePostBySlug, useRelatedPosts, useAdminPosts } from "@/hooks/usePosts";
+import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 function calculateReadingTime(htmlContent: string): number {
   const textContent = htmlContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -18,7 +22,20 @@ function calculateReadingTime(htmlContent: string): number {
 
 const Artigo = () => {
   const { slug } = useParams();
-  const { data: post, isLoading: postLoading } = usePostBySlug(slug);
+  const [searchParams] = useSearchParams();
+  const isPreview = searchParams.get('preview') === 'true';
+  const { isAdmin } = useAuth();
+  
+  // Use different queries based on preview mode
+  const { data: publicPost, isLoading: publicLoading } = usePostBySlug(isPreview ? undefined : slug);
+  const { data: adminPosts, isLoading: adminLoading } = useAdminPosts();
+  
+  // For preview mode, find the post from admin posts
+  const post = isPreview && isAdmin 
+    ? adminPosts?.find(p => p.slug === slug) 
+    : publicPost;
+  const postLoading = isPreview ? adminLoading : publicLoading;
+  
   const { data: relatedPosts, isLoading: relatedLoading } = useRelatedPosts(post?.id, post?.category, 3);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
 
@@ -40,6 +57,19 @@ const Artigo = () => {
     );
   }
 
+  // Block non-admin users from viewing preview
+  if (isPreview && !isAdmin) {
+    return (
+      <Layout>
+        <div className="container py-20 text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Acesso restrito</h1>
+          <p className="text-muted-foreground mb-6">Este conteúdo está disponível apenas para administradores.</p>
+          <Link to="/cartas" className="btn-primary">Ver artigos publicados</Link>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!post) {
     return (
       <Layout>
@@ -51,14 +81,49 @@ const Artigo = () => {
     );
   }
 
-  const formattedDate = post.published_at
-    ? new Date(post.published_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
+  // Format dates
+  const publishedDate = post.published_at
+    ? format(new Date(post.published_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR })
     : null;
+  
+  const updatedDate = post.updated_at
+    ? format(new Date(post.updated_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR })
+    : null;
+
+  // Check if we should show update date (using the new field)
+  const showUpdatedAt = (post as any).show_updated_at && updatedDate && updatedDate !== publishedDate;
+
+  // SEO Schema
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.description || post.subtitle || "",
+    "image": post.cover_image || "",
+    "datePublished": post.published_at || post.created_at,
+    "dateModified": post.updated_at,
+    "author": {
+      "@type": "Person",
+      "name": "Kleverson"
+    }
+  };
 
   return (
     <Layout>
       <ReadingProgressBar />
+      
+      {/* SEO Schema */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+      
       <article className="container py-12">
+        {isPreview && (
+          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
+            <p className="text-yellow-600 dark:text-yellow-400 text-sm font-medium">
+              ⚠️ Modo de pré-visualização - Este artigo ainda não foi publicado
+            </p>
+          </div>
+        )}
+        
         <Link to="/cartas" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Voltar para Cartas
@@ -66,11 +131,27 @@ const Artigo = () => {
 
         <header className="max-w-3xl mb-12">
           <span className="category-pill mb-4 inline-block">{post.category}</span>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">{post.title}</h1>
-          {post.subtitle && <p className="text-lg md:text-xl text-muted-foreground font-serif italic mb-6">{post.subtitle}</p>}
+          <h1 className="article-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-foreground mb-4 leading-tight">
+            {post.title}
+          </h1>
+          {post.subtitle && (
+            <p className="text-lg md:text-xl text-muted-foreground font-serif italic mb-6">
+              {post.subtitle}
+            </p>
+          )}
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            {formattedDate && <span>{formattedDate}</span>}
-            {readingTime > 0 && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{readingTime} min de leitura</span>}
+            {publishedDate && (
+              <span>
+                Publicado em {publishedDate}
+                {showUpdatedAt && ` • Atualizado em ${updatedDate}`}
+              </span>
+            )}
+            {readingTime > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                {readingTime} min de leitura
+              </span>
+            )}
           </div>
         </header>
 
@@ -83,16 +164,27 @@ const Artigo = () => {
         {post.body && <ArticleTableOfContents />}
 
         <div className="max-w-3xl mx-auto">
-          {post.body && <div className="prose-article article-body" dangerouslySetInnerHTML={{ __html: post.body }} />}
+          {post.body && (
+            <ArticleContent 
+              htmlContent={post.body} 
+              articleUrl={window.location.href} 
+            />
+          )}
 
           <SocialShareButtons title={post.title} url={window.location.href} />
 
           <div className="mt-8 p-8 glass rounded-lg text-center">
             <MessageCircle className="w-10 h-10 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-bold text-foreground mb-2">Participe de minha comunidade privada</h3>
-            <p className="text-muted-foreground mb-4">Acesso direto a conversas sobre os temas das cartas + networking com jovens que pensam como você + conteúdos exclusivos que só compartilhamos no grupo.</p>
-            <p className="text-muted-foreground mb-6">Ao entrar, você terá acesso a conteúdos exclusivos e discussões profundas sobre os temas das cartas.</p>
-            <button className="btn-primary" onClick={() => setShowWhatsAppModal(true)}>Entrar agora!</button>
+            <p className="text-muted-foreground mb-4">
+              Acesso direto a conversas sobre os temas das cartas + networking com jovens que pensam como você + conteúdos exclusivos que só compartilhamos no grupo.
+            </p>
+            <p className="text-muted-foreground mb-6">
+              Ao entrar, você terá acesso a conteúdos exclusivos e discussões profundas sobre os temas das cartas.
+            </p>
+            <button className="btn-primary" onClick={() => setShowWhatsAppModal(true)}>
+              Entrar agora!
+            </button>
           </div>
         </div>
 

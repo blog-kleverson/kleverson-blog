@@ -45,10 +45,12 @@ import {
   Users,
   Search,
   X,
-  Eye
+  Eye,
+  HardDrive
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import AdminBackup from '@/components/AdminBackup';
 import AdminLeadsTable from '@/components/AdminLeadsTable';
 
 export default function Admin() {
@@ -58,6 +60,7 @@ export default function Admin() {
   const navigate = useNavigate();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showLeads, setShowLeads] = useState(false);
+  const [showBackup, setShowBackup] = useState(false);
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -283,6 +286,10 @@ export default function Admin() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold">Posts</h2>
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowBackup(true)}>
+              <HardDrive className="w-4 h-4 mr-2" />
+              Backup
+            </Button>
             <Button variant="outline" onClick={() => setShowLeads(true)}>
               <Users className="w-4 h-4 mr-2" />
               Ver Leads
@@ -420,6 +427,9 @@ export default function Admin() {
 
       {/* Leads Modal */}
       <AdminLeadsTable open={showLeads} onOpenChange={setShowLeads} />
+
+      {/* Backup Modal */}
+      <AdminBackup open={showBackup} onOpenChange={setShowBackup} />
     </div>
   );
 }

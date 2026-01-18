@@ -109,21 +109,47 @@
   }
 
   .prose-article p {
-    @apply text-base md:text-lg;
+    @apply text-base;
     margin-bottom: 1.5rem;
     text-align: left;
+    line-height: 1.7;
   }
 
   @media (min-width: 768px) {
     .prose-article p {
+      @apply text-lg;
       text-align: justify;
     }
   }
 
-  .prose-article p:first-of-type::first-letter {
-    @apply float-left text-5xl md:text-6xl font-bold leading-none mr-3 mt-1;
-    color: hsl(var(--primary));
-    font-family: var(--font-serif);
+  /* Drop Cap - Desktop Only */
+  @media (min-width: 768px) {
+    .prose-article > p:first-of-type::first-letter,
+    .article-body > p:first-of-type::first-letter,
+    .about-bio > p:first-of-type::first-letter {
+      float: left;
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 0.8;
+      margin-right: 0.75rem;
+      margin-top: 0.15rem;
+      color: hsl(var(--primary));
+      font-family: var(--font-serif);
+    }
+  }
+
+  /* Mobile - No Drop Cap */
+  @media (max-width: 767px) {
+    .prose-article > p:first-of-type::first-letter,
+    .article-body > p:first-of-type::first-letter,
+    .about-bio > p:first-of-type::first-letter {
+      float: none;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      margin: 0;
+      color: inherit;
+    }
   }
 
   /* Article body HTML elements */
@@ -160,12 +186,23 @@
     @apply font-bold text-foreground;
   }
 
+  /* Article Headings - H2, H3, H4 with Lora Italic */
   .article-body h2 {
-    @apply text-xl md:text-2xl font-bold text-foreground mt-10 mb-4;
+    @apply text-xl md:text-2xl font-normal text-foreground mt-10 mb-4;
+    font-family: var(--font-serif);
+    font-style: italic;
   }
 
   .article-body h3 {
-    @apply text-lg md:text-xl font-bold text-foreground mt-8 mb-3;
+    @apply text-lg md:text-xl font-normal text-foreground mt-8 mb-3;
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+
+  .article-body h4 {
+    @apply text-base md:text-lg font-normal text-foreground mt-6 mb-2;
+    font-family: var(--font-serif);
+    font-style: italic;
   }
 
   .article-body ul, .article-body ol {
@@ -226,6 +263,53 @@
 
   .link-underline:hover::after {
     width: 100%;
+  }
+
+  /* Article Title - Lora Bold */
+  .article-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+  }
+
+  /* Card excerpt - Lora Regular */
+  .card-excerpt {
+    font-family: var(--font-serif);
+    font-weight: 400;
+  }
+
+  /* About page bio */
+  .about-bio {
+    font-family: var(--font-serif);
+    @apply text-foreground/90;
+  }
+
+  .about-bio p {
+    @apply text-base md:text-lg leading-relaxed mb-6;
+    text-align: left;
+  }
+
+  @media (min-width: 768px) {
+    .about-bio p {
+      text-align: center;
+    }
+  }
+
+  /* Scrollbar for TOC */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
   }
 }
 

@@ -3,7 +3,7 @@ import { Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
-// Custom Instagram icon
+// Custom Instagram icon with gradient
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 24 24"
@@ -25,6 +25,9 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const INSTAGRAM_URL = 'https://www.instagram.com/eusoukleverson';
+const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KzQL3AVRaVUGjdHFCnRBZk';
+
 interface SocialShareButtonsProps {
   title: string;
   url: string;
@@ -44,18 +47,12 @@ export default function SocialShareButtons({ title, url }: SocialShareButtonsPro
     }
   };
 
-  const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(`${title}\n\n${url}`);
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+  const handleWhatsAppClick = () => {
+    window.open(WHATSAPP_GROUP_URL, '_blank', 'noopener,noreferrer');
   };
 
-  const handleInstagramShare = () => {
-    // Instagram doesn't have a direct share URL, so we copy the link and inform the user
-    navigator.clipboard.writeText(url).then(() => {
-      toast.success('Link copiado! Cole no Instagram Stories ou Direct.');
-    }).catch(() => {
-      toast.error('Erro ao copiar link');
-    });
+  const handleInstagramClick = () => {
+    window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -67,18 +64,22 @@ export default function SocialShareButtons({ title, url }: SocialShareButtonsPro
         <Button
           variant="outline"
           size="lg"
-          onClick={handleWhatsAppShare}
-          className="rounded-full h-12 w-12 p-0 hover:bg-[#25D366]/10 hover:border-[#25D366] hover:text-[#25D366] transition-colors"
-          title="Compartilhar no WhatsApp"
+          onClick={handleWhatsAppClick}
+          className="rounded-full h-12 w-12 p-0 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all"
+          style={{ background: 'rgba(37, 211, 102, 0.1)' }}
+          title="Comunidade WhatsApp"
         >
           <WhatsAppIcon className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="lg"
-          onClick={handleInstagramShare}
-          className="rounded-full h-12 w-12 p-0 hover:bg-[#E4405F]/10 hover:border-[#E4405F] hover:text-[#E4405F] transition-colors"
-          title="Compartilhar no Instagram"
+          onClick={handleInstagramClick}
+          className="rounded-full h-12 w-12 p-0 border-[#E4405F] text-[#E4405F] hover:text-white transition-all"
+          style={{ 
+            background: 'linear-gradient(45deg, rgba(225, 48, 108, 0.1), rgba(193, 53, 132, 0.1), rgba(131, 58, 180, 0.1))',
+          }}
+          title="Instagram"
         >
           <InstagramIcon className="w-5 h-5" />
         </Button>

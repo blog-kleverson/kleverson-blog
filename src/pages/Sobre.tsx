@@ -1,18 +1,23 @@
 import { MessageCircle, Instagram, Youtube } from "lucide-react";
 import Layout from "@/components/Layout";
 
-// TikTok icon component (not available in lucide-react)
+// TikTok icon component
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
   </svg>
 );
 
+const INSTAGRAM_URL = 'https://www.instagram.com/eusoukleverson';
+const YOUTUBE_URL = 'https://www.youtube.com/@eusoukleverson';
+const TIKTOK_URL = 'https://www.tiktok.com/@eusoukleverson';
+const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KzQL3AVRaVUGjdHFCnRBZk';
+
 const Sobre = () => {
   const socialLinks = [
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Youtube, href: "#", label: "YouTube" },
-    { icon: TikTokIcon, href: "#", label: "TikTok" },
+    { icon: Instagram, href: INSTAGRAM_URL, label: "Instagram" },
+    { icon: Youtube, href: YOUTUBE_URL, label: "YouTube" },
+    { icon: TikTokIcon, href: TIKTOK_URL, label: "TikTok" },
   ];
 
   return (
@@ -28,35 +33,35 @@ const Sobre = () => {
                 className="w-full h-full object-cover grayscale"
               />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-              Sobre Mim
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-[0.15em]">
+              KLEVERSON
             </h1>
-            <p className="text-primary font-serif italic">
+            <p className="text-primary font-serif italic text-lg">
               Escritor e Empreendedor
             </p>
           </div>
 
           {/* Bio */}
-          <div className="prose-article text-center mb-12">
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+          <div className="about-bio text-center mb-12">
+            <p className="text-muted-foreground">
               Não sou guru da internet. Não tenho fórmulas mágicas.
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            <p className="text-muted-foreground">
               Tenho 20 anos e estou vivendo obcecado por uma pergunta:
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            <p className="text-muted-foreground">
               Por que algumas pessoas explodem o próprio potencial enquanto outras ficam presas em loops de "quase"?
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            <p className="text-muted-foreground">
               Estou mergulhando afundo nisso.
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            <p className="text-muted-foreground">
               Neurociência. Psicologia. Filosofia. Espiritualidade. Negócios etc...
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            <p className="text-muted-foreground">
               Estou testando tudo em mim primeiro. Aplicando. Errando. Ajustando. Reconstruindo quando falho.
             </p>
-            <p className="text-lg leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground">
               E tudo que faz sentido e funciona, eu escrevo em minhas cartas...
             </p>
           </div>
@@ -67,6 +72,8 @@ const Sobre = () => {
               <a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 rounded-full bg-card border border-border text-muted-foreground hover:text-primary hover:border-primary/50"
                 style={{ transition: "color var(--transition-fast), border-color var(--transition-fast)" }}
                 aria-label={social.label}
@@ -85,9 +92,14 @@ const Sobre = () => {
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Se você tem dúvidas ou apenas quer trocar uma ideia, estou disponível pelo WhatsApp.
             </p>
-            <button className="btn-primary">
+            <a 
+              href={WHATSAPP_GROUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
               Chamar no WhatsApp
-            </button>
+            </a>
           </div>
         </div>
       </div>

@@ -6,6 +6,14 @@
     <title>KLEVERSON | Mente, Espírito, Físico, Vocação</title>
     <meta name="description" content="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida." />
     <meta name="author" content="Kleverson" />
+    <meta name="theme-color" content="#7a1f4d" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Kleverson" />
 
     <meta property="og:title" content="KLEVERSON | Mente, Espírito, Físico, Vocação" />
     <meta property="og:description" content="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo." />
@@ -20,5 +28,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('SW registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

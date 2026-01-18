@@ -16,18 +16,21 @@ export type Database = {
     Tables: {
       leads: {
         Row: {
+          article_url: string | null
           created_at: string
           id: string
           name: string
           whatsapp: string
         }
         Insert: {
+          article_url?: string | null
           created_at?: string
           id?: string
           name: string
           whatsapp: string
         }
         Update: {
+          article_url?: string | null
           created_at?: string
           id?: string
           name?: string
@@ -48,6 +51,7 @@ export type Database = {
           popular: boolean
           published_at: string | null
           scheduled_at: string | null
+          show_updated_at: boolean
           slug: string
           status: Database["public"]["Enums"]["post_status"]
           subtitle: string | null
@@ -66,6 +70,7 @@ export type Database = {
           popular?: boolean
           published_at?: string | null
           scheduled_at?: string | null
+          show_updated_at?: boolean
           slug: string
           status?: Database["public"]["Enums"]["post_status"]
           subtitle?: string | null
@@ -84,6 +89,7 @@ export type Database = {
           popular?: boolean
           published_at?: string | null
           scheduled_at?: string | null
+          show_updated_at?: boolean
           slug?: string
           status?: Database["public"]["Enums"]["post_status"]
           subtitle?: string | null

@@ -68,16 +68,16 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
   });
 
   const onSubmit = async (data: LeadFormData) => {
+    const whatsappNumber = `+${data.countryCode}${data.phoneNumber}`;
+    
     try {
-      const whatsappNumber = `+${data.countryCode}${data.phoneNumber}`;
-      
       await createLead.mutateAsync({
         name: data.name,
         whatsapp: whatsappNumber,
-        article_url: articleUrl,
+        article_url: articleUrl || null,
       });
 
-      // Close modal and show success toast
+      // Only close modal and show success AFTER successful save
       setIsModalOpen(false);
       reset();
       
@@ -85,7 +85,8 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
         duration: 2000,
       });
     } catch (error) {
-      toast.error('Erro ao registrar. Tente novamente.');
+      // Keep modal open and show error - data was NOT saved
+      toast.error('Ocorreu um erro ao salvar seus dados. Tente novamente.');
     }
   };
 

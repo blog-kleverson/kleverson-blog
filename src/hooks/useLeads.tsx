@@ -47,21 +47,38 @@ export function useCreateLead() {
 
   return useMutation({
     mutationFn: async (lead: LeadInsert) => {
+      // Validate required fields before sending
+      if (!lead.name || lead.name.trim().length < 2) {
+        throw new Error('Nome é obrigatório');
+      }
+      if (!lead.whatsapp || lead.whatsapp.trim().length < 10) {
+        throw new Error('Número de WhatsApp é obrigatório');
+      }
+
       const { data, error } = await supabase
         .from('leads')
-        .insert(lead)
+        .insert({
+          name: lead.name.trim(),
+          whatsapp: lead.whatsapp.trim(),
+          article_url: lead.article_url || null,
+        })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error saving lead:', error);
+        throw new Error('Falha ao salvar no banco de dados');
+      }
+      
+      if (!data) {
+        throw new Error('Nenhum dado retornado após salvar');
+      }
+
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-leads'] });
     },
-    onError: (error: Error) => {
-      console.error('Erro ao salvar lead:', error);
-      toast.error('Erro ao salvar dados. Tente novamente.');
-    },
+    // Don't show toast here - let the component handle it for proper UX
   });
 }

@@ -38,7 +38,7 @@ const HeroSection = () => {
             <span className="category-pill mb-4 inline-block">
               {featuredPost.category}
             </span>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-foreground">
+            <h1 className="article-title text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 text-foreground">
               {featuredPost.title}
             </h1>
             {featuredPost.subtitle && (
@@ -47,7 +47,7 @@ const HeroSection = () => {
               </p>
             )}
             {featuredPost.description && (
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="card-excerpt text-muted-foreground mb-8 leading-relaxed">
                 {featuredPost.description}
               </p>
             )}

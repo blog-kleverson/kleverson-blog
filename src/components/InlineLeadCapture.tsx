@@ -1,9 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -11,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Check, Users } from 'lucide-react';
+import { Loader2, Users } from 'lucide-react';
 import { useCreateLead } from '@/hooks/useLeads';
 import { toast } from 'sonner';
 
@@ -27,6 +34,7 @@ const COUNTRIES = [
 ];
 
 const leadSchema = z.object({
+  name: z.string().trim().min(2, 'Nome deve ter pelo menos 2 caracteres').max(100, 'Nome muito longo'),
   countryCode: z.string().min(1, 'Selecione um país'),
   phoneNumber: z.string()
     .min(8, 'Número deve ter pelo menos 8 dígitos')
@@ -41,129 +49,140 @@ interface InlineLeadCaptureProps {
 }
 
 export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps) {
-  const [submitted, setSubmitted] = useState(false);
-  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const createLead = useCreateLead();
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: {
       countryCode: '244',
+      name: '',
       phoneNumber: '',
     },
   });
-
-  // Check if user already subscribed (using localStorage)
-  useEffect(() => {
-    const subscribedArticles = localStorage.getItem('subscribedLeadCapture');
-    if (subscribedArticles) {
-      const articles = JSON.parse(subscribedArticles);
-      if (articles.includes(articleUrl) || articles.includes('global')) {
-        setAlreadySubscribed(true);
-      }
-    }
-  }, [articleUrl]);
 
   const onSubmit = async (data: LeadFormData) => {
     try {
       const whatsappNumber = `+${data.countryCode}${data.phoneNumber}`;
       
       await createLead.mutateAsync({
-        name: 'Leitor', // Default name for inline captures
+        name: data.name,
         whatsapp: whatsappNumber,
+        article_url: articleUrl,
       });
 
-      // Mark as subscribed in localStorage
-      const subscribedArticles = localStorage.getItem('subscribedLeadCapture');
-      const articles = subscribedArticles ? JSON.parse(subscribedArticles) : [];
-      articles.push(articleUrl || 'global');
-      localStorage.setItem('subscribedLeadCapture', JSON.stringify(articles));
-
-      setSubmitted(true);
-      toast.success('Número registrado com sucesso!');
+      // Close modal and show success toast
+      setIsModalOpen(false);
+      reset();
+      
+      toast.success('Obrigado por se inscrever. Em breve o adicionaremos em nossa comunidade.', {
+        duration: 2000,
+      });
     } catch (error) {
       toast.error('Erro ao registrar. Tente novamente.');
     }
   };
 
-  if (alreadySubscribed) {
-    return null; // Don't show if already subscribed
-  }
-
-  if (submitted) {
-    return (
-      <div className="my-8 p-6 rounded-xl border-2 border-primary/20 bg-primary/5 text-center">
-        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
-          <Check className="w-6 h-6 text-primary" />
-        </div>
-        <p className="text-foreground font-medium font-serif">Obrigado por se inscrever!</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="my-8 p-6 rounded-xl border-2 border-primary/20 bg-card">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <Users className="w-5 h-5 text-primary" />
-        </div>
-        <h4 className="text-lg font-bold text-foreground font-serif">Participe da comunidade</h4>
-      </div>
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex gap-2">
-          <Controller
-            name="countryCode"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[100px] bg-background">
-                  <SelectValue>
-                    {COUNTRIES.find(c => c.code === field.value)?.flag} +{field.value}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {COUNTRIES.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
-                      <span className="flex items-center gap-2">
-                        <span>{country.flag}</span>
-                        <span>+{country.code}</span>
-                        <span className="text-muted-foreground text-xs">{country.name}</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-          <Input
-            {...register('phoneNumber')}
-            type="tel"
-            placeholder="Número de WhatsApp"
-            className="flex-1 bg-background"
-          />
-        </div>
-        
-        {errors.phoneNumber && (
-          <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
-        )}
-        
-        <Button
-          type="submit"
-          disabled={createLead.isPending}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+    <>
+      {/* Subtle inline button */}
+      <div className="my-6 flex justify-center" data-lead-capture="true">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-foreground rounded-md transition-all hover:opacity-90 hover:shadow-md"
+          style={{ background: 'var(--gradient-primary)' }}
         >
-          {createLead.isPending ? (
-            <Loader2 className="w-4 h-4 animate-spin mr-2" />
-          ) : null}
-          Participe da comunidade
-        </Button>
-      </form>
-    </div>
+          <Users className="w-4 h-4" />
+          Participar da comunidade
+        </button>
+      </div>
+
+      {/* Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-foreground">
+              <Users className="w-5 h-5 text-primary" />
+              Entrar na comunidade
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                placeholder="Seu nome"
+                className="bg-background/50"
+                {...register('name')}
+              />
+              {errors.name && (
+                <p className="text-sm text-destructive">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="whatsapp">Número de WhatsApp</Label>
+              <div className="flex gap-2">
+                <Controller
+                  name="countryCode"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-[100px] bg-background/50">
+                        <SelectValue>
+                          {COUNTRIES.find(c => c.code === field.value)?.flag} +{field.value}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border">
+                        {COUNTRIES.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            <span className="flex items-center gap-2">
+                              <span>{country.flag}</span>
+                              <span>+{country.code}</span>
+                              <span className="text-muted-foreground text-xs">{country.name}</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <Input
+                  {...register('phoneNumber')}
+                  type="tel"
+                  placeholder="999 999 999"
+                  className="flex-1 bg-background/50"
+                />
+              </div>
+              
+              {errors.countryCode && (
+                <p className="text-sm text-destructive">{errors.countryCode.message}</p>
+              )}
+              {errors.phoneNumber && (
+                <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
+              )}
+            </div>
+            
+            <Button
+              type="submit"
+              disabled={createLead.isPending}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              {createLead.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : null}
+              Entrar na comunidade
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

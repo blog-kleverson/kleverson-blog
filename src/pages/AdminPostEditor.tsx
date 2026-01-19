@@ -45,6 +45,7 @@ export default function AdminPostEditor() {
     featured: false,
     popular: false,
     scheduled_at: '',
+    show_updated_at: false,
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -71,6 +72,7 @@ export default function AdminPostEditor() {
           featured: post.featured,
           popular: post.popular,
           scheduled_at: post.scheduled_at ? post.scheduled_at.slice(0, 16) : '',
+          show_updated_at: post.show_updated_at || false,
         });
       }
     }
@@ -119,6 +121,10 @@ export default function AdminPostEditor() {
     setIsSaving(true);
 
     try {
+      // Get existing post to check if it was already published
+      const existingPost = !isNew && posts ? posts.find(p => p.id === id) : null;
+      const wasAlreadyPublished = existingPost?.published_at;
+      
       const postData: PostInsert = {
         title: formData.title,
         slug: formData.slug,
@@ -130,10 +136,14 @@ export default function AdminPostEditor() {
         status: formData.status,
         featured: formData.featured,
         popular: formData.popular,
+        show_updated_at: formData.show_updated_at,
         scheduled_at: formData.status === 'scheduled' && formData.scheduled_at 
           ? new Date(formData.scheduled_at).toISOString() 
           : null,
-        published_at: formData.status === 'published' ? new Date().toISOString() : null,
+        // Only set published_at if it's a new publish, not on edits
+        published_at: formData.status === 'published' 
+          ? (wasAlreadyPublished || new Date().toISOString())
+          : null,
         author_id: user?.id || null,
       };
 
@@ -400,9 +410,9 @@ export default function AdminPostEditor() {
                   </div>
                   <Switch
                     id="show_updated_at"
-                    checked={(formData as any).show_updated_at || false}
+                    checked={formData.show_updated_at || false}
                     onCheckedChange={(checked) =>
-                      setFormData(prev => ({ ...prev, popular: checked }))
+                      setFormData(prev => ({ ...prev, show_updated_at: checked }))
                     }
                   />
                 </div>

@@ -122,36 +122,6 @@
     }
   }
 
-  /* Drop Cap - Desktop Only */
-  @media (min-width: 768px) {
-    .prose-article > p:first-of-type::first-letter,
-    .article-body > p:first-of-type::first-letter,
-    .about-bio > p:first-of-type::first-letter {
-      float: left;
-      font-size: 4rem;
-      font-weight: 700;
-      line-height: 0.8;
-      margin-right: 0.75rem;
-      margin-top: 0.15rem;
-      color: hsl(var(--primary));
-      font-family: var(--font-serif);
-    }
-  }
-
-  /* Mobile - No Drop Cap */
-  @media (max-width: 767px) {
-    .prose-article > p:first-of-type::first-letter,
-    .article-body > p:first-of-type::first-letter,
-    .about-bio > p:first-of-type::first-letter {
-      float: none;
-      font-size: inherit;
-      font-weight: inherit;
-      line-height: inherit;
-      margin: 0;
-      color: inherit;
-    }
-  }
-
   /* Article body HTML elements */
   .article-body {
     text-align: left;
@@ -265,33 +235,45 @@
     width: 100%;
   }
 
-  /* Article Title - Lora Bold */
-  .article-title {
+  /* Article Title - Lora Bold (GLOBAL for all titles) */
+  .article-title,
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-serif);
     font-weight: 700;
   }
 
-  /* Card excerpt - Lora Regular */
+  /* Specific override for article body headings to use italic */
+  .article-body h2,
+  .article-body h3,
+  .article-body h4 {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* Card excerpt / descriptions - Lora Regular */
   .card-excerpt {
     font-family: var(--font-serif);
     font-weight: 400;
   }
 
-  /* About page bio */
+  /* About page bio - Lora Regular */
   .about-bio {
     font-family: var(--font-serif);
+    font-weight: 400;
     @apply text-foreground/90;
   }
 
   .about-bio p {
     @apply text-base md:text-lg leading-relaxed mb-6;
-    text-align: left;
+    text-align: center;
   }
 
-  @media (min-width: 768px) {
-    .about-bio p {
-      text-align: center;
-    }
+  /* Page description - Lora Regular */
+  .page-description {
+    font-family: var(--font-serif);
+    font-weight: 400;
   }
 
   /* Scrollbar for TOC */

@@ -36,7 +36,7 @@ const Cartas = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Cartas
           </h1>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="page-description text-muted-foreground max-w-2xl">
             Reflexões, estratégias e insights para ajudar você a alcançar 
             seu potencial máximo em todas as áreas da vida.
           </p>

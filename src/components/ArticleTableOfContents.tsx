@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { List, ChevronLeft, ChevronDown, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { List, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TocItem {
@@ -13,7 +13,7 @@ export default function ArticleTableOfContents() {
   const [activeId, setActiveId] = useState<string>('');
   const [isVisible, setIsVisible] = useState(true);
 
-  // Parse article body to find h2, h3, h4 elements
+  // Parse article body to find h2, h3, h4 elements (excluding lead capture buttons)
   useEffect(() => {
     const parseHeadings = () => {
       const articleBody = document.querySelector('.article-body');
@@ -23,6 +23,9 @@ export default function ArticleTableOfContents() {
       const items: TocItem[] = [];
 
       headings.forEach((heading, index) => {
+        // Skip headings inside lead capture elements
+        if (heading.closest('[data-lead-capture="true"]')) return;
+        
         const tagName = heading.tagName.toLowerCase();
         const level = parseInt(tagName.charAt(1));
         let id = heading.id;
@@ -35,7 +38,8 @@ export default function ArticleTableOfContents() {
 
         const text = heading.textContent?.trim() || '';
 
-        if (text) {
+        // Skip empty headings or headings that look like CTAs
+        if (text && !text.toLowerCase().includes('participar') && !text.toLowerCase().includes('comunidade')) {
           items.push({ id, text, level });
         }
       });

@@ -6,12 +6,14 @@ export interface Lead {
   id: string;
   name: string;
   whatsapp: string;
+  article_url: string | null;
   created_at: string;
 }
 
 export interface LeadInsert {
   name: string;
   whatsapp: string;
+  article_url?: string | null;
 }
 
 // Hook para admin buscar leads com paginação

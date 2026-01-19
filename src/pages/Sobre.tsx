@@ -1,4 +1,4 @@
-import { MessageCircle, Instagram, Youtube } from "lucide-react";
+import { Instagram, Youtube } from "lucide-react";
 import Layout from "@/components/Layout";
 
 // TikTok icon component
@@ -25,7 +25,7 @@ const Sobre = () => {
       <div className="container py-12 md:py-20">
         <div className="max-w-3xl mx-auto">
           {/* Profile Section */}
-          <div className="flex flex-col items-center text-center mb-12">
+          <div className="flex flex-col items-center text-center mb-8">
             <div className="w-40 h-40 rounded-full overflow-hidden bg-card border-4 border-primary/20 mb-6">
               <img
                 src="https://res.cloudinary.com/dxfwizcl6/image/upload/v1767541070/IMG_2382-3_ar17ol.jpg"
@@ -41,33 +41,30 @@ const Sobre = () => {
             </p>
           </div>
 
-          {/* Bio */}
-          <div className="about-bio text-center mb-12">
+          {/* Bio - Lora Regular */}
+          <div className="about-bio text-center mb-8">
             <p className="text-muted-foreground">
-              Não sou guru da internet. Não tenho fórmulas mágicas.
+              Obcecado por mente, desempenho e crescimento real.
             </p>
             <p className="text-muted-foreground">
-              Tenho 20 anos e estou vivendo obcecado por uma pergunta:
-            </p>
-            <p className="text-muted-foreground">
-              Por que algumas pessoas explodem o próprio potencial enquanto outras ficam presas em loops de "quase"?
-            </p>
-            <p className="text-muted-foreground">
-              Estou mergulhando afundo nisso.
-            </p>
-            <p className="text-muted-foreground">
-              Neurociência. Psicologia. Filosofia. Espiritualidade. Negócios etc...
-            </p>
-            <p className="text-muted-foreground">
-              Estou testando tudo em mim primeiro. Aplicando. Errando. Ajustando. Reconstruindo quando falho.
-            </p>
-            <p className="text-muted-foreground">
-              E tudo que faz sentido e funciona, eu escrevo em minhas cartas...
+              Testo em mim. Escrevo o que funciona.
             </p>
           </div>
 
+          {/* WhatsApp CTA Button */}
+          <div className="flex justify-center mb-8">
+            <a 
+              href={WHATSAPP_GROUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Entrar na comunidade
+            </a>
+          </div>
+
           {/* Social Links */}
-          <div className="flex justify-center gap-4 mb-12">
+          <div className="flex justify-center gap-4">
             {socialLinks.map((social) => (
               <a
                 key={social.label}
@@ -81,25 +78,6 @@ const Sobre = () => {
                 <social.icon className="w-5 h-5" />
               </a>
             ))}
-          </div>
-
-          {/* WhatsApp CTA */}
-          <div className="glass rounded-xl p-8 text-center">
-            <MessageCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-foreground mb-3">
-              Vamos Conversar?
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Se você tem dúvidas ou apenas quer trocar uma ideia, estou disponível pelo WhatsApp.
-            </p>
-            <a 
-              href={WHATSAPP_GROUP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-            >
-              Chamar no WhatsApp
-            </a>
           </div>
         </div>
       </div>

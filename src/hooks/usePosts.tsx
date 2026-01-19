@@ -14,6 +14,7 @@ export interface Post {
   status: 'draft' | 'scheduled' | 'published';
   featured: boolean;
   popular: boolean;
+  show_updated_at: boolean;
   scheduled_at: string | null;
   published_at: string | null;
   author_id: string | null;

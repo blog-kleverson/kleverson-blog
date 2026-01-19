@@ -31,7 +31,7 @@ const PostCardHorizontal = ({ post }: PostCardHorizontalProps) => {
         <span className="text-xs text-primary uppercase tracking-wider">
           {post.category}
         </span>
-        <h3 className="text-sm font-medium text-foreground mt-1 line-clamp-2 group-hover:text-primary" style={{ transition: "color var(--transition-fast)" }}>
+        <h3 className="article-title text-sm text-foreground mt-1 line-clamp-2 group-hover:text-primary" style={{ transition: "color var(--transition-fast)" }}>
           {post.title}
         </h3>
         {formattedDate && (

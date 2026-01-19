@@ -23,7 +23,7 @@ const PostCardLarge = ({ post }: PostCardLargeProps) => {
         <span className="category-pill mb-3 self-start">
           {post.category}
         </span>
-        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary" style={{ transition: "color var(--transition-fast)" }}>
+        <h3 className="article-title text-xl text-foreground mb-2 group-hover:text-primary" style={{ transition: "color var(--transition-fast)" }}>
           {post.title}
         </h3>
         {post.subtitle && (
@@ -32,7 +32,7 @@ const PostCardLarge = ({ post }: PostCardLargeProps) => {
           </p>
         )}
         {post.description && (
-          <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-4">
+          <p className="card-excerpt text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-4">
             {post.description}
           </p>
         )}

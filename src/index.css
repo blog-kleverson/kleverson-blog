@@ -156,23 +156,43 @@
     @apply font-bold text-foreground;
   }
 
-  /* Article Headings - H2, H3, H4 with Lora Italic */
+  /* Article Headings - H2, H3, H4 - Lora Bold, NOT italic */
   .article-body h2 {
-    @apply text-xl md:text-2xl font-normal text-foreground mt-10 mb-4;
+    @apply text-xl md:text-2xl font-bold text-foreground mt-10 mb-4;
     font-family: var(--font-serif);
-    font-style: italic;
+    font-style: normal;
   }
 
   .article-body h3 {
-    @apply text-lg md:text-xl font-normal text-foreground mt-8 mb-3;
+    @apply text-lg md:text-xl font-bold text-foreground mt-8 mb-3;
     font-family: var(--font-serif);
-    font-style: italic;
+    font-style: normal;
   }
 
   .article-body h4 {
-    @apply text-base md:text-lg font-normal text-foreground mt-6 mb-2;
+    @apply text-base md:text-lg font-bold text-foreground mt-6 mb-2;
     font-family: var(--font-serif);
-    font-style: italic;
+    font-style: normal;
+  }
+
+  /* Responsive YouTube/video iframes */
+  .article-body iframe {
+    @apply w-full aspect-video rounded-lg my-6;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .article-body .video-container,
+  .article-body .youtube-container {
+    @apply relative w-full my-6;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+  }
+
+  .article-body .video-container iframe,
+  .article-body .youtube-container iframe {
+    @apply absolute top-0 left-0 w-full h-full rounded-lg;
   }
 
   .article-body ul, .article-body ol {
@@ -244,12 +264,12 @@
     font-weight: 700;
   }
 
-  /* Specific override for article body headings to use italic */
+  /* Specific override for article body headings - Lora Bold, NOT italic */
   .article-body h2,
   .article-body h3,
   .article-body h4 {
-    font-weight: 400;
-    font-style: italic;
+    font-weight: 700;
+    font-style: normal;
   }
 
   /* Card excerpt / descriptions - Lora Regular */
@@ -266,7 +286,7 @@
   }
 
   .about-bio p {
-    @apply text-base md:text-lg leading-relaxed mb-6;
+    @apply text-base md:text-lg leading-relaxed mb-2;
     text-align: center;
   }
 

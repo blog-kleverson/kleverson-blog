@@ -1,9 +1,8 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, MessageCircle, Clock } from "lucide-react";
+import { ArrowLeft, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
 import PostCardLarge from "@/components/PostCardLarge";
-import WhatsAppLeadModal from "@/components/WhatsAppLeadModal";
 import ArticleTableOfContents from "@/components/ArticleTableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import SocialShareButtons from "@/components/SocialShareButtons";
@@ -37,7 +36,7 @@ const Artigo = () => {
   const postLoading = isPreview ? adminLoading : publicLoading;
   
   const { data: relatedPosts, isLoading: relatedLoading } = useRelatedPosts(post?.id, post?.category, 3);
-  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  
 
   const readingTime = useMemo(() => post?.body ? calculateReadingTime(post.body) : 0, [post?.body]);
 
@@ -173,22 +172,20 @@ const Artigo = () => {
 
           <SocialShareButtons title={post.title} url={window.location.href} />
 
-          <div className="mt-8 p-8 glass rounded-lg text-center">
-            <MessageCircle className="w-10 h-10 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-foreground mb-2">Participe de minha comunidade privada</h3>
-            <p className="text-muted-foreground mb-4">
-              Acesso direto a conversas sobre os temas das cartas + networking com jovens que pensam como você + conteúdos exclusivos que só compartilhamos no grupo.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Ao entrar, você terá acesso a conteúdos exclusivos e discussões profundas sobre os temas das cartas.
-            </p>
-            <button className="btn-primary" onClick={() => setShowWhatsAppModal(true)}>
-              Entrar agora!
-            </button>
+          {/* WhatsApp Community CTA */}
+          <div className="mt-8 flex justify-center">
+            <a 
+              href="https://chat.whatsapp.com/KzQL3AVRaVUGjdHFCnRBZk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Entrar na comunidade
+            </a>
           </div>
         </div>
 
-        <WhatsAppLeadModal open={showWhatsAppModal} onOpenChange={setShowWhatsAppModal} />
+        
 
         {relatedPosts && relatedPosts.length > 0 && (
           <section className="mt-20">

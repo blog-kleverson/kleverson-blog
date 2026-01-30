@@ -37,9 +37,9 @@ const leadSchema = z.object({
   name: z.string().trim().min(2, 'Nome deve ter pelo menos 2 caracteres').max(100, 'Nome muito longo'),
   countryCode: z.string().min(1, 'Selecione um país'),
   phoneNumber: z.string()
-    .min(8, 'Número deve ter pelo menos 8 dígitos')
-    .max(15, 'Número muito longo')
-    .regex(/^\d+$/, 'Apenas números são permitidos'),
+    .min(6, 'Número deve ter pelo menos 6 dígitos')
+    .max(20, 'Número muito longo')
+    .regex(/^[\d\s-]+$/, 'Use apenas números'),
 });
 
 type LeadFormData = z.infer<typeof leadSchema>;
@@ -69,12 +69,14 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
 
   const onSubmit = async (data: LeadFormData) => {
     try {
-      const whatsappNumber = `+${data.countryCode}${data.phoneNumber}`;
+      // Clean phone number (remove spaces and dashes)
+      const cleanedPhone = data.phoneNumber.replace(/[\s-]/g, '');
+      const whatsappNumber = `+${data.countryCode}${cleanedPhone}`;
       
       await createLead.mutateAsync({
-        name: data.name,
+        name: data.name.trim(),
         whatsapp: whatsappNumber,
-        article_url: articleUrl,
+        article_url: articleUrl || null,
       });
 
       // Close modal and show success toast

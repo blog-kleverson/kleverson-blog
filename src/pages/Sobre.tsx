@@ -33,7 +33,7 @@ const Sobre = () => {
                 className="w-full h-full object-cover grayscale"
               />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-[0.15em]">
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-[0.05em]">
               KLEVERSON
             </h1>
             <p className="text-primary font-serif italic text-lg">
@@ -42,11 +42,11 @@ const Sobre = () => {
           </div>
 
           {/* Bio - Lora Regular */}
-          <div className="about-bio text-center mb-8">
-            <p className="text-muted-foreground">
+          <div className="about-bio text-center mb-6">
+            <p className="text-muted-foreground mb-1">
               Obcecado por mente, desempenho e crescimento real.
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-1">
               Testo em mim. Escrevo o que funciona.
             </p>
           </div>

@@ -47,14 +47,13 @@ export function useCreateLead() {
 
   return useMutation({
     mutationFn: async (lead: LeadInsert) => {
-      const { data, error } = await supabase
+      // Don't use .select().single() because anonymous users can't read leads
+      const { error } = await supabase
         .from('leads')
-        .insert(lead)
-        .select()
-        .single();
+        .insert(lead);
 
       if (error) throw error;
-      return data;
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-leads'] });

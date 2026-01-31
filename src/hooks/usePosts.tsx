@@ -22,7 +22,9 @@ export interface Post {
   updated_at: string;
 }
 
-export type PostInsert = Omit<Post, 'id' | 'created_at' | 'updated_at'>;
+export type PostInsert = Omit<Post, 'id' | 'created_at' | 'updated_at'> & {
+  show_updated_at?: boolean;
+};
 export type PostUpdate = Partial<PostInsert>;
 
 // Hook para buscar posts públicos (publicados)

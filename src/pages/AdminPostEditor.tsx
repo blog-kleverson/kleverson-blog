@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -15,8 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Save, Loader2, Eye } from 'lucide-react';
-
+import { ArrowLeft, Save, Loader2, Eye, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const DEFAULT_CATEGORIES = ["Mente", "Espírito", "Físico", "Vocação"];
@@ -46,6 +50,8 @@ export default function AdminPostEditor() {
     popular: false,
     scheduled_at: '',
     show_updated_at: false,
+    published_at: null as Date | null,
+    created_at: null as Date | null,
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -73,6 +79,8 @@ export default function AdminPostEditor() {
           popular: post.popular,
           scheduled_at: post.scheduled_at ? post.scheduled_at.slice(0, 16) : '',
           show_updated_at: post.show_updated_at || false,
+          published_at: post.published_at ? new Date(post.published_at) : null,
+          created_at: post.created_at ? new Date(post.created_at) : null,
         });
       }
     }
@@ -125,6 +133,21 @@ export default function AdminPostEditor() {
       const existingPost = !isNew && posts ? posts.find(p => p.id === id) : null;
       const wasAlreadyPublished = existingPost?.published_at;
       
+      // Determine published_at value
+      let publishedAtValue: string | null = null;
+      if (formData.status === 'published') {
+        if (formData.published_at) {
+          // Use manually set date
+          publishedAtValue = formData.published_at.toISOString();
+        } else if (wasAlreadyPublished) {
+          // Keep existing date
+          publishedAtValue = wasAlreadyPublished;
+        } else {
+          // New publish, use current date
+          publishedAtValue = new Date().toISOString();
+        }
+      }
+
       const postData: PostInsert = {
         title: formData.title,
         slug: formData.slug,
@@ -140,10 +163,7 @@ export default function AdminPostEditor() {
         scheduled_at: formData.status === 'scheduled' && formData.scheduled_at 
           ? new Date(formData.scheduled_at).toISOString() 
           : null,
-        // Only set published_at if it's a new publish, not on edits
-        published_at: formData.status === 'published' 
-          ? (wasAlreadyPublished || new Date().toISOString())
-          : null,
+        published_at: publishedAtValue,
         author_id: user?.id || null,
       };
 
@@ -310,7 +330,7 @@ export default function AdminPostEditor() {
 
                 {formData.status === 'scheduled' && (
                   <div className="space-y-2">
-                    <Label htmlFor="scheduled_at">Data de publicação</Label>
+                    <Label htmlFor="scheduled_at">Data de agendamento</Label>
                     <Input
                       id="scheduled_at"
                       type="datetime-local"
@@ -318,6 +338,73 @@ export default function AdminPostEditor() {
                       onChange={(e) => setFormData(prev => ({ ...prev, scheduled_at: e.target.value }))}
                       className="bg-background/50"
                     />
+                  </div>
+                )}
+
+                {formData.status === 'published' && (
+                  <div className="space-y-2">
+                    <Label>Data de publicação</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal bg-background/50",
+                            !formData.published_at && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.published_at ? (
+                            format(formData.published_at, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                          ) : (
+                            <span>Selecionar data</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.published_at || undefined}
+                          onSelect={(date) => setFormData(prev => ({ ...prev, published_at: date || null }))}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                          locale={ptBR}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-xs text-muted-foreground">
+                      Data exibida publicamente no artigo
+                    </p>
+                  </div>
+                )}
+
+                {!isNew && formData.created_at && (
+                  <div className="space-y-2">
+                    <Label>Data de criação</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal bg-background/50"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {format(formData.created_at, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.created_at || undefined}
+                          onSelect={(date) => setFormData(prev => ({ ...prev, created_at: date || null }))}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                          locale={ptBR}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-xs text-muted-foreground">
+                      Data interna de criação do post
+                    </p>
                   </div>
                 )}
 

@@ -47,19 +47,30 @@ export function useCreateLead() {
 
   return useMutation({
     mutationFn: async (lead: LeadInsert) => {
-      // Don't use .select().single() because anonymous users can't read leads
+      console.log('Inserting lead:', lead);
+      
+      // Insert without returning data (anonymous users can't read leads)
       const { error } = await supabase
         .from('leads')
-        .insert(lead);
+        .insert({
+          name: lead.name,
+          whatsapp: lead.whatsapp,
+          article_url: lead.article_url ?? null,
+        });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
+      
+      console.log('Lead inserted successfully');
       return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-leads'] });
     },
     onError: (error: Error) => {
-      console.error('Erro ao salvar lead:', error);
+      console.error('Mutation error:', error);
       toast.error('Erro ao salvar dados. Tente novamente.');
     },
   });

@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 export interface Lead {
   id: string;
@@ -10,13 +9,13 @@ export interface Lead {
   created_at: string;
 }
 
-export interface LeadInsert {
+export interface CreateLeadInput {
   name: string;
   whatsapp: string;
   article_url?: string | null;
 }
 
-// Hook para admin buscar leads com paginação
+// Hook for admins to fetch leads with pagination
 export function useAdminLeads(page: number = 1, pageSize: number = 20) {
   return useQuery({
     queryKey: ['admin-leads', page, pageSize],
@@ -41,37 +40,26 @@ export function useAdminLeads(page: number = 1, pageSize: number = 20) {
   });
 }
 
-// Hook para criar lead (público)
+// Hook for public lead creation
 export function useCreateLead() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (lead: LeadInsert) => {
-      console.log('Inserting lead:', lead);
-      
-      // Insert without returning data (anonymous users can't read leads)
+    mutationFn: async (input: CreateLeadInput) => {
       const { error } = await supabase
         .from('leads')
         .insert({
-          name: lead.name,
-          whatsapp: lead.whatsapp,
-          article_url: lead.article_url ?? null,
+          name: input.name,
+          whatsapp: input.whatsapp,
+          article_url: input.article_url ?? null,
         });
 
-      if (error) {
-        console.error('Supabase insert error:', error);
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log('Lead inserted successfully');
       return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-leads'] });
-    },
-    onError: (error: Error) => {
-      console.error('Mutation error:', error);
-      toast.error('Erro ao salvar dados. Tente novamente.');
     },
   });
 }

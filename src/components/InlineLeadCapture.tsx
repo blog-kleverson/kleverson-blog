@@ -31,72 +31,65 @@ const COUNTRIES = [
   { code: '245', flag: '🇬🇼', name: 'Guiné-Bissau' },
   { code: '239', flag: '🇸🇹', name: 'São Tomé e Príncipe' },
   { code: '670', flag: '🇹🇱', name: 'Timor-Leste' },
-];
+] as const;
 
-const leadSchema = z.object({
-  name: z.string().trim().min(2, 'Nome deve ter pelo menos 2 caracteres').max(100, 'Nome muito longo'),
+const formSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Nome deve ter pelo menos 2 caracteres')
+    .max(100, 'Nome muito longo'),
   countryCode: z.string().min(1, 'Selecione um país'),
-  phoneNumber: z.string()
+  phoneNumber: z
+    .string()
     .min(6, 'Número deve ter pelo menos 6 dígitos')
     .max(20, 'Número muito longo')
     .regex(/^[\d\s-]+$/, 'Use apenas números'),
 });
 
-type LeadFormData = z.infer<typeof leadSchema>;
+type FormData = z.infer<typeof formSchema>;
 
 interface InlineLeadCaptureProps {
   articleUrl?: string;
 }
 
 export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const createLead = useCreateLead();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<LeadFormData>({
-    resolver: zodResolver(leadSchema),
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      countryCode: '244',
       name: '',
+      countryCode: '244',
       phoneNumber: '',
     },
   });
 
-  const onSubmit = async (data: LeadFormData) => {
+  const onSubmit = async (data: FormData) => {
+    const cleanPhone = data.phoneNumber.replace(/[\s-]/g, '');
+    const whatsapp = `+${data.countryCode}${cleanPhone}`;
+
     try {
-      // Clean phone number (remove spaces and dashes)
-      const cleanedPhone = data.phoneNumber.replace(/[\s-]/g, '');
-      const whatsappNumber = `+${data.countryCode}${cleanedPhone}`;
-      
       await createLead.mutateAsync({
         name: data.name.trim(),
-        whatsapp: whatsappNumber,
-        article_url: articleUrl || null,
+        whatsapp,
+        article_url: articleUrl,
       });
 
-      // Close modal and show success toast
-      setIsModalOpen(false);
-      reset();
-      
-      toast.success('Obrigado por se inscrever. Em breve o adicionaremos em nossa comunidade.', {
-        duration: 2000,
-      });
-    } catch (error) {
+      setIsOpen(false);
+      form.reset();
+      toast.success('Obrigado! Em breve você será adicionado à comunidade.');
+    } catch {
       toast.error('Erro ao registrar. Tente novamente.');
     }
   };
 
   return (
     <>
-      {/* Subtle inline button */}
       <div className="my-6 flex justify-center" data-lead-capture="true">
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-foreground rounded-md transition-all hover:opacity-90 hover:shadow-md"
           style={{ background: 'var(--gradient-primary)' }}
         >
@@ -105,8 +98,7 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
         </button>
       </div>
 
-      {/* Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md bg-card border-border">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-foreground">
@@ -115,31 +107,34 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome</Label>
               <Input
                 id="name"
                 placeholder="Seu nome"
                 className="bg-background/50"
-                {...register('name')}
+                {...form.register('name')}
               />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name.message}</p>
+              {form.formState.errors.name && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.name.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="whatsapp">Número de WhatsApp</Label>
+              <Label htmlFor="phone">Número de WhatsApp</Label>
               <div className="flex gap-2">
                 <Controller
                   name="countryCode"
-                  control={control}
+                  control={form.control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-[100px] bg-background/50">
                         <SelectValue>
-                          {COUNTRIES.find(c => c.code === field.value)?.flag} +{field.value}
+                          {COUNTRIES.find((c) => c.code === field.value)?.flag} +
+                          {field.value}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
@@ -148,7 +143,9 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
                             <span className="flex items-center gap-2">
                               <span>{country.flag}</span>
                               <span>+{country.code}</span>
-                              <span className="text-muted-foreground text-xs">{country.name}</span>
+                              <span className="text-muted-foreground text-xs">
+                                {country.name}
+                              </span>
                             </span>
                           </SelectItem>
                         ))}
@@ -157,29 +154,32 @@ export default function InlineLeadCapture({ articleUrl }: InlineLeadCaptureProps
                   )}
                 />
                 <Input
-                  {...register('phoneNumber')}
+                  {...form.register('phoneNumber')}
                   type="tel"
                   placeholder="999 999 999"
                   className="flex-1 bg-background/50"
                 />
               </div>
-              
-              {errors.countryCode && (
-                <p className="text-sm text-destructive">{errors.countryCode.message}</p>
+              {form.formState.errors.countryCode && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.countryCode.message}
+                </p>
               )}
-              {errors.phoneNumber && (
-                <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
+              {form.formState.errors.phoneNumber && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.phoneNumber.message}
+                </p>
               )}
             </div>
-            
+
             <Button
               type="submit"
               disabled={createLead.isPending}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {createLead.isPending ? (
+              {createLead.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : null}
+              )}
               Entrar na comunidade
             </Button>
           </form>

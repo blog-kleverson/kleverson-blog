@@ -161,6 +161,49 @@
     @apply text-xl md:text-2xl font-bold text-foreground mt-10 mb-4;
     font-family: var(--font-serif);
     font-style: normal;
+    scroll-margin-top: 5rem;
+  }
+
+  /* Anchor link on h2 headings */
+  .article-body h2.heading-with-anchor {
+    position: relative;
+  }
+
+  .heading-anchor-link {
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.375rem;
+    color: hsl(var(--muted-foreground));
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .article-body h2.heading-with-anchor:hover .heading-anchor-link {
+    opacity: 1;
+  }
+
+  .heading-anchor-link:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 1 !important;
+  }
+
+  @media (max-width: 767px) {
+    .heading-anchor-link {
+      left: -1.5rem;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
   }
 
   .article-body h3 {

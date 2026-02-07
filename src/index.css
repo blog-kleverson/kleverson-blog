@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 8%;
 
-    --primary: 1 91% 38%;
+    --primary: 336 84% 28%;
     --primary-foreground: 220 14% 96%;
 
     --secondary: 0 0% 94%;
@@ -24,7 +24,7 @@
     --muted: 0 0% 92%;
     --muted-foreground: 0 0% 40%;
 
-    --accent: 1 91% 38%;
+    --accent: 336 84% 28%;
     --accent-foreground: 220 14% 96%;
 
     --destructive: 0 84.2% 60.2%;
@@ -32,7 +32,7 @@
 
     --border: 0 0% 88%;
     --input: 0 0% 88%;
-    --ring: 1 91% 38%;
+    --ring: 336 84% 28%;
 
     --radius: 0.5rem;
 
@@ -43,7 +43,7 @@
     --shadow-card: 0 4px 20px -4px hsla(0, 0%, 0%, 0.1);
     --shadow-card-hover: 0 8px 30px -4px hsla(0, 0%, 0%, 0.15);
     
-    --gradient-primary: linear-gradient(135deg, hsl(1, 91%, 38%), hsl(1, 80%, 28%));
+    --gradient-primary: linear-gradient(135deg, hsl(336, 84%, 28%), hsl(336, 70%, 20%));
     --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 0%, 0.03), hsla(0, 0%, 0%, 0.01));
     
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,7 +61,7 @@
     --popover: 0 0% 8%;
     --popover-foreground: 220 14% 96%;
 
-    --primary: 1 91% 38%;
+    --primary: 336 84% 28%;
     --primary-foreground: 220 14% 96%;
 
     --secondary: 0 0% 12%;
@@ -70,7 +70,7 @@
     --muted: 0 0% 15%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 1 91% 38%;
+    --accent: 336 84% 28%;
     --accent-foreground: 220 14% 96%;
 
     --destructive: 0 84.2% 60.2%;
@@ -78,7 +78,7 @@
 
     --border: 0 0% 18%;
     --input: 0 0% 18%;
-    --ring: 1 91% 38%;
+    --ring: 336 84% 28%;
 
     --shadow-card: 0 4px 20px -4px hsla(0, 0%, 0%, 0.5);
     --shadow-card-hover: 0 8px 30px -4px hsla(0, 0%, 0%, 0.7);
@@ -135,7 +135,7 @@
 
   .article-body blockquote {
     @apply border-l-4 border-primary pl-6 py-2 my-8 italic;
-    background: hsla(1, 91%, 38%, 0.05);
+    background: hsla(336, 84%, 28%, 0.05);
     @apply rounded-r-lg;
   }
 
@@ -345,7 +345,7 @@
 
   .category-pill {
     @apply text-xs uppercase tracking-wider px-3 py-1 rounded-full;
-    background: hsla(1, 91%, 38%, 0.15);
+    background: hsla(336, 84%, 28%, 0.15);
     color: hsl(var(--primary));
   }
 }

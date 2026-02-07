@@ -6,6 +6,33 @@ interface ArticleContentProps {
   articleUrl?: string;
 }
 
+// Generate a URL-friendly slug from text
+const textToSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[^a-z0-9\s-]/g, '')   // Remove special chars
+    .trim()
+    .replace(/\s+/g, '-')           // Spaces to hyphens
+    .replace(/-+/g, '-');            // Collapse multiple hyphens
+};
+
+// Add slug IDs to h2, h3, h4 elements in HTML
+const addHeadingIds = (html: string): string => {
+  return html.replace(
+    /<(h[2-4])([^>]*)>([\s\S]*?)<\/\1>/gi,
+    (match, tag, attrs, content) => {
+      // Strip HTML tags from content to get plain text
+      const plainText = content.replace(/<[^>]*>/g, '').trim();
+      const slug = textToSlug(plainText);
+      // Preserve existing attributes, add id
+      if (attrs.includes('id=')) return match; // Don't overwrite existing ids
+      return `<${tag}${attrs} id="${slug}">${content}</${tag}>`;
+    }
+  );
+};
+
 // Configure DOMPurify to allow safe HTML tags for article content
 const sanitizeHTML = (html: string): string => {
   return DOMPurify.sanitize(html, {
@@ -36,8 +63,8 @@ export default function ArticleContent({ htmlContent, articleUrl }: ArticleConte
   const parts = htmlContent.split(/\{\{lead-capture\}\}/gi);
   
   if (parts.length === 1) {
-    // No shortcodes found, render normally with sanitized HTML
-    const sanitizedContent = sanitizeHTML(htmlContent);
+    // No shortcodes found, render normally with sanitized HTML + heading IDs
+    const sanitizedContent = addHeadingIds(sanitizeHTML(htmlContent));
     return (
       <div 
         className="prose-article article-body" 
@@ -50,7 +77,7 @@ export default function ArticleContent({ htmlContent, articleUrl }: ArticleConte
   return (
     <div className="prose-article article-body">
       {parts.map((part, index) => {
-        const sanitizedPart = sanitizeHTML(part);
+        const sanitizedPart = addHeadingIds(sanitizeHTML(part));
         return (
           <div key={index}>
             <div dangerouslySetInnerHTML={{ __html: sanitizedPart }} />

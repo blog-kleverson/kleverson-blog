@@ -28,9 +28,9 @@ const Sobre = () => {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-40 h-40 rounded-full overflow-hidden bg-card border-4 border-primary/20 mb-6">
               <img
-                src="https://res.cloudinary.com/dxfwizcl6/image/upload/v1767541070/IMG_2382-3_ar17ol.jpg"
+                src="/images/profile.png"
                 alt="Kleverson"
-                className="w-full h-full object-cover grayscale"
+                className="w-full h-full object-cover"
               />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-[0.05em]">

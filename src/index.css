@@ -361,6 +361,7 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 font-medium tracking-wide;
+    font-family: var(--font-serif);
     background: var(--gradient-primary);
     @apply text-primary-foreground rounded-md;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
@@ -373,6 +374,7 @@
 
   .btn-glass {
     @apply glass inline-flex items-center justify-center px-6 py-3 font-medium tracking-wide rounded-md;
+    font-family: var(--font-serif);
     @apply text-foreground;
     transition: background var(--transition-fast), border-color var(--transition-fast);
   }
@@ -391,4 +393,11 @@
     background: hsla(336, 84%, 28%, 0.15);
     color: hsl(var(--primary));
   }
+}
+
+/* Blog buttons use Lora font (exclude admin area) */
+:not(.admin-area) > button,
+:not(.admin-area) > a[class*="btn-"],
+:not(.admin-area) > [data-blog-button] {
+  font-family: var(--font-serif);
 }

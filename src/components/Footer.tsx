@@ -47,10 +47,13 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border/50 text-center">
+        <div className="mt-8 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Kleverson. Todos os direitos reservados.
           </p>
+          <Link to="/termos" className="text-sm text-muted-foreground hover:text-primary" style={{ transition: "color var(--transition-fast)" }}>
+            Termos de Uso
+          </Link>
         </div>
       </div>
     </footer>

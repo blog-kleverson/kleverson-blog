@@ -11,6 +11,7 @@ import Sobre from "./pages/Sobre";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminPostEditor from "./pages/AdminPostEditor";
+import Termos from "./pages/Termos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/cartas" element={<Cartas />} />
               <Route path="/artigo/:slug" element={<Artigo />} />
               <Route path="/sobre" element={<Sobre />} />
+              <Route path="/termos" element={<Termos />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/post/:id" element={<AdminPostEditor />} />

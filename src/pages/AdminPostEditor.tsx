@@ -52,6 +52,9 @@ export default function AdminPostEditor() {
     show_updated_at: false,
     published_at: null as Date | null,
     created_at: null as Date | null,
+    meta_description: '',
+    og_title: '',
+    og_image: '',
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -81,6 +84,9 @@ export default function AdminPostEditor() {
           show_updated_at: post.show_updated_at || false,
           published_at: post.published_at ? new Date(post.published_at) : null,
           created_at: post.created_at ? new Date(post.created_at) : null,
+          meta_description: (post as any).meta_description || '',
+          og_title: (post as any).og_title || '',
+          og_image: (post as any).og_image || '',
         });
       }
     }
@@ -165,6 +171,9 @@ export default function AdminPostEditor() {
           : null,
         published_at: publishedAtValue,
         author_id: user?.id || null,
+        meta_description: formData.meta_description || null,
+        og_title: formData.og_title || null,
+        og_image: formData.og_image || null,
       };
 
       if (isNew) {
@@ -454,6 +463,61 @@ export default function AdminPostEditor() {
                     />
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/50 border-border/50">
+              <CardHeader>
+                <CardTitle>SEO</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="meta_description">Meta Description</Label>
+                  <Textarea
+                    id="meta_description"
+                    value={formData.meta_description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, meta_description: e.target.value }))}
+                    placeholder="Descrição para mecanismos de busca (máx. 160 caracteres)"
+                    rows={3}
+                    className="bg-background/50"
+                    maxLength={160}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {formData.meta_description.length}/160 caracteres
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="og_title">OG Title</Label>
+                  <Input
+                    id="og_title"
+                    value={formData.og_title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, og_title: e.target.value }))}
+                    placeholder="Título para redes sociais (padrão: título do post)"
+                    className="bg-background/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="og_image">OG Image URL</Label>
+                  <Input
+                    id="og_image"
+                    value={formData.og_image}
+                    onChange={(e) => setFormData(prev => ({ ...prev, og_image: e.target.value }))}
+                    placeholder="URL da imagem para redes sociais"
+                    className="bg-background/50"
+                  />
+                  {formData.og_image && (
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden max-w-[200px]">
+                      <img
+                        src={formData.og_image}
+                        alt="OG Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

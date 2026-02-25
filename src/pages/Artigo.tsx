@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
+import SEOHead from "@/components/SEOHead";
 import PostCardLarge from "@/components/PostCardLarge";
 import ArticleTableOfContents from "@/components/ArticleTableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
@@ -92,27 +93,44 @@ const Artigo = () => {
   // Check if we should show update date (using the new field)
   const showUpdatedAt = (post as any).show_updated_at && updatedDate && updatedDate !== publishedDate;
 
+  // Build article URL
+  const articleUrl = `${window.location.origin}/artigo/${post.slug}`;
+
   // SEO Schema
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
-    "description": post.description || post.subtitle || "",
-    "image": post.cover_image || "",
+    "description": (post as any).meta_description || post.description || post.subtitle || "",
+    "image": (post as any).og_image || post.cover_image || "",
     "datePublished": post.published_at || post.created_at,
     "dateModified": post.updated_at,
     "author": {
       "@type": "Person",
       "name": "Kleverson"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": articleUrl
     }
   };
 
   return (
     <Layout>
+      <SEOHead
+        title={post.title}
+        description={(post as any).meta_description || post.description || post.subtitle || ""}
+        ogTitle={(post as any).og_title || post.title}
+        ogDescription={(post as any).meta_description || post.description || post.subtitle || ""}
+        ogImage={(post as any).og_image || post.cover_image || undefined}
+        ogUrl={articleUrl}
+        type="article"
+        publishedTime={post.published_at || post.created_at}
+        modifiedTime={post.updated_at}
+        robots="index, follow"
+        schemaData={schemaData}
+      />
       <ReadingProgressBar />
-      
-      {/* SEO Schema */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
       
       <article className="container py-12">
         {isPreview && (

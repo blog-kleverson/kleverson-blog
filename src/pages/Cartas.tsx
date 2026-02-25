@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import PostCardLarge from "@/components/PostCardLarge";
+import SEOHead from "@/components/SEOHead";
 import { usePublicPosts, useCategories } from "@/hooks/usePosts";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -31,6 +32,14 @@ const Cartas = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Cartas"
+        description="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
+        ogTitle="Cartas | KLEVERSON"
+        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo."
+        ogUrl={`${window.location.origin}/cartas`}
+        robots="index, follow"
+      />
       <div className="container py-12">
         <div className="mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">

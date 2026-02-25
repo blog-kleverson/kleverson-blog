@@ -1,5 +1,6 @@
 import { Instagram, Youtube } from "lucide-react";
 import Layout from "@/components/Layout";
+import SEOHead from "@/components/SEOHead";
 
 // TikTok icon component
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -22,6 +23,14 @@ const Sobre = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Sobre"
+        description="Conheça Kleverson — escritor e empreendedor obcecado por mente, desempenho e crescimento real."
+        ogTitle="Sobre | KLEVERSON"
+        ogDescription="Conheça Kleverson — escritor e empreendedor obcecado por mente, desempenho e crescimento real."
+        ogUrl={`${window.location.origin}/sobre`}
+        robots="index, follow"
+      />
       <div className="container py-12 md:py-20">
         <div className="max-w-3xl mx-auto">
           {/* Profile Section */}
@@ -41,7 +50,7 @@ const Sobre = () => {
             </p>
           </div>
 
-          {/* Bio - Lora Regular */}
+          {/* Bio */}
           <div className="about-bio text-center mb-6">
             <p className="text-muted-foreground mb-1">
               Obcecado por mente, desempenho e crescimento real.

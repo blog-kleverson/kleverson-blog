@@ -1,14 +1,8 @@
 import Layout from "@/components/Layout";
-import SEOHead from "@/components/SEOHead";
 
 const Termos = () => {
   return (
     <Layout>
-      <SEOHead
-        title="Termos de Uso"
-        description="Termos de uso do site KLEVERSON."
-        robots="noindex, nofollow"
-      />
       <div className="container py-12 md:py-20">
         <div className="max-w-3xl mx-auto prose-custom">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">

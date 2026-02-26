@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
-import SEOHead from "@/components/SEOHead";
 import PostCardLarge from "@/components/PostCardLarge";
 import ArticleTableOfContents from "@/components/ArticleTableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
@@ -26,18 +25,15 @@ const Artigo = () => {
   const isPreview = searchParams.get('preview') === 'true';
   const { isAdmin } = useAuth();
   
-  // Use different queries based on preview mode
   const { data: publicPost, isLoading: publicLoading } = usePostBySlug(isPreview ? undefined : slug);
   const { data: adminPosts, isLoading: adminLoading } = useAdminPosts();
   
-  // For preview mode, find the post from admin posts
   const post = isPreview && isAdmin 
     ? adminPosts?.find(p => p.slug === slug) 
     : publicPost;
   const postLoading = isPreview ? adminLoading : publicLoading;
   
-  const { data: relatedPosts, isLoading: relatedLoading } = useRelatedPosts(post?.id, post?.category, 3);
-  
+  const { data: relatedPosts } = useRelatedPosts(post?.id, post?.category, 3);
 
   const readingTime = useMemo(() => post?.body ? calculateReadingTime(post.body) : 0, [post?.body]);
 
@@ -57,7 +53,6 @@ const Artigo = () => {
     );
   }
 
-  // Block non-admin users from viewing preview
   if (isPreview && !isAdmin) {
     return (
       <Layout>
@@ -81,7 +76,6 @@ const Artigo = () => {
     );
   }
 
-  // Format dates
   const publishedDate = post.published_at
     ? format(new Date(post.published_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR })
     : null;
@@ -90,46 +84,10 @@ const Artigo = () => {
     ? format(new Date(post.updated_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR })
     : null;
 
-  // Check if we should show update date (using the new field)
-  const showUpdatedAt = (post as any).show_updated_at && updatedDate && updatedDate !== publishedDate;
-
-  // Build article URL
-  const articleUrl = `${window.location.origin}/artigo/${post.slug}`;
-
-  // SEO Schema
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": post.title,
-    "description": (post as any).meta_description || post.description || post.subtitle || "",
-    "image": (post as any).og_image || post.cover_image || "",
-    "datePublished": post.published_at || post.created_at,
-    "dateModified": post.updated_at,
-    "author": {
-      "@type": "Person",
-      "name": "Kleverson"
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": articleUrl
-    }
-  };
+  const showUpdatedAt = post.show_updated_at && updatedDate && updatedDate !== publishedDate;
 
   return (
     <Layout>
-      <SEOHead
-        title={post.title}
-        description={(post as any).meta_description || post.description || post.subtitle || ""}
-        ogTitle={(post as any).og_title || post.title}
-        ogDescription={(post as any).meta_description || post.description || post.subtitle || ""}
-        ogImage={(post as any).og_image || post.cover_image || undefined}
-        ogUrl={articleUrl}
-        type="article"
-        publishedTime={post.published_at || post.created_at}
-        modifiedTime={post.updated_at}
-        robots="index, follow"
-        schemaData={schemaData}
-      />
       <ReadingProgressBar />
       
       <article className="container py-12">
@@ -190,7 +148,6 @@ const Artigo = () => {
 
           <SocialShareButtons title={post.title} url={window.location.href} />
 
-          {/* WhatsApp Community CTA */}
           <div className="mt-8 flex justify-center">
             <a 
               href="https://chat.whatsapp.com/KzQL3AVRaVUGjdHFCnRBZk"
@@ -202,8 +159,6 @@ const Artigo = () => {
             </a>
           </div>
         </div>
-
-        
 
         {relatedPosts && relatedPosts.length > 0 && (
           <section className="mt-20">

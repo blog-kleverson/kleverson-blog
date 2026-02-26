@@ -1,6 +1,5 @@
 import { Instagram, Youtube } from "lucide-react";
 import Layout from "@/components/Layout";
-import SEOHead from "@/components/SEOHead";
 
 // TikTok icon component
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -23,15 +22,6 @@ const Sobre = () => {
 
   return (
     <Layout>
-      <SEOHead
-        title="Sobre"
-        description="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
-        ogTitle="KLEVERSON - Sobre"
-        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
-        ogImage={`${window.location.origin}/images/og-default.png`}
-        ogUrl={`${window.location.origin}/sobre`}
-        robots="index, follow"
-      />
       <div className="container py-12 md:py-20">
         <div className="max-w-3xl mx-auto">
           {/* Profile Section */}

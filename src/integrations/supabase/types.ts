@@ -48,9 +48,6 @@ export type Database = {
           description: string | null
           featured: boolean
           id: string
-          meta_description: string | null
-          og_image: string | null
-          og_title: string | null
           popular: boolean
           published_at: string | null
           scheduled_at: string | null
@@ -70,9 +67,6 @@ export type Database = {
           description?: string | null
           featured?: boolean
           id?: string
-          meta_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
           popular?: boolean
           published_at?: string | null
           scheduled_at?: string | null
@@ -92,9 +86,6 @@ export type Database = {
           description?: string | null
           featured?: boolean
           id?: string
-          meta_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
           popular?: boolean
           published_at?: string | null
           scheduled_at?: string | null

@@ -20,16 +20,10 @@ export interface Post {
   author_id: string | null;
   created_at: string;
   updated_at: string;
-  og_image: string | null;
-  meta_description: string | null;
-  og_title: string | null;
 }
 
 export type PostInsert = Omit<Post, 'id' | 'created_at' | 'updated_at'> & {
   show_updated_at?: boolean;
-  og_image?: string | null;
-  meta_description?: string | null;
-  og_title?: string | null;
 };
 export type PostUpdate = Partial<PostInsert>;
 

@@ -11,7 +11,8 @@ const Index = () => {
         title=""
         description="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
         ogTitle="KLEVERSON"
-        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo."
+        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
+        ogImage={`${window.location.origin}/images/og-default.png`}
         ogUrl={window.location.origin}
         robots="index, follow"
       />

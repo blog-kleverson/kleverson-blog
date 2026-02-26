@@ -25,9 +25,10 @@ const Sobre = () => {
     <Layout>
       <SEOHead
         title="Sobre"
-        description="Conheça Kleverson — escritor e empreendedor obcecado por mente, desempenho e crescimento real."
-        ogTitle="Sobre | KLEVERSON"
-        ogDescription="Conheça Kleverson — escritor e empreendedor obcecado por mente, desempenho e crescimento real."
+        description="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
+        ogTitle="KLEVERSON - Sobre"
+        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
+        ogImage={`${window.location.origin}/images/og-default.png`}
         ogUrl={`${window.location.origin}/sobre`}
         robots="index, follow"
       />

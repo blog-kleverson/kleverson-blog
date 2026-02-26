@@ -35,8 +35,9 @@ const Cartas = () => {
       <SEOHead
         title="Cartas"
         description="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
-        ogTitle="Cartas | KLEVERSON"
-        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo."
+        ogTitle="KLEVERSON - Cartas"
+        ogDescription="Reflexões, estratégias e insights para ajudar você a alcançar seu potencial máximo em todas as áreas da vida."
+        ogImage={`${window.location.origin}/images/og-default.png`}
         ogUrl={`${window.location.origin}/cartas`}
         robots="index, follow"
       />

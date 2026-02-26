@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const DEFAULT_OG_IMAGE = "/images/profile.png";
+const DEFAULT_OG_IMAGE = "/images/og-default.png";
 const SITE_NAME = "KLEVERSON";
 
 interface SEOHeadProps {
@@ -77,6 +77,7 @@ const SEOHead = ({
 
     // Twitter
     setMeta("name", "twitter:card", "summary_large_image");
+    setMeta("name", "twitter:site", "@Kleverson");
     setMeta("name", "twitter:title", ogTitle || title || SITE_NAME);
     setMeta("name", "twitter:description", ogDescription || description || "");
     setMeta("name", "twitter:image", ogImage || `${window.location.origin}${DEFAULT_OG_IMAGE}`);

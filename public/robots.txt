@@ -14,5 +14,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /auth
+Disallow: /termos
 
-Sitemap: https://kleverson.com/sitemap.xml
+Sitemap: https://dffzqpskashuwtpyqtvf.supabase.co/functions/v1/sitemap
